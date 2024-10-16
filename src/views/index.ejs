@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List</title>
+    <link rel="stylesheet" href="/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="container">
+        <h1>To-Do List</h1>
+    
+        <form action="/add" method="POST" class="task-form">
+            <input type="text" name="title" placeholder="Task Title" required>
+            <input type="text" name="description" placeholder="Task Description" required>
+            <button type="submit" class="btn primary-btn">Add Task</button>
+        </form>
+    
+        <ul class="task-list">
+            <% if (tasks.length === 0) { %>
+                <li class="empty-message">No tasks available. Add some tasks to get started!</li>
+            <% } else { %>
+                <% tasks.forEach(task => { %>
+                    <li class="task-item <%= task.status ? 'completed' : '' %>">
+                        <div class="task-checkbox">
+                            <input type="checkbox" id="task-<%= task.id %>" <%= task.status ? 'checked' : '' %> onchange="toggleTaskCompletionStatus(<%= task.id %>)">
+                            <label for="task-<%= task.id %>"></label>
+                        </div>
+                        <div class="task-info">
+                            <h3><%= task.title %></h3>
+                            <p><%= task.description %></p>
+                            <div id="edit-form-<%= task.id %>" class="edit-form">
+                                <form action="/edit/<%= task.id %>" method="POST">
+                                    <input type="text" name="title" value="<%= task.title %>" placeholder="Task Title" required>
+                                    <input type="text" name="description" value="<%= task.description %>" placeholder="Task Description" required>
+                                    <button type="submit" class="btn primary-btn">Update</button>
+                                    <button type="button" class="btn" onclick="toggleEditFormVisibility('<%= task.id %>')">Cancel</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="task-actions" id="task-actions-<%= task.id %>">
+                            <button class="btn primary-btn" onclick="toggleEditFormVisibility('<%= task.id %>')">Edit</button>
+                            <form action="/delete/<%= task.id %>" method="POST" class="action-form">
+                                <button type="submit" class="btn danger-btn">Delete</button>
+                            </form>
+                        </div>
+                    </li>
+                <% }); %>
+            <% } %>
+        </ul>
+    </div>
+    
+    <script src="/script.js"></script>
+
+</body>
+</html>
